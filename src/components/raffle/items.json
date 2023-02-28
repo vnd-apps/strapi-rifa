@@ -1,0 +1,31 @@
+{
+  "collectionName": "components_raffle_items",
+  "info": {
+    "displayName": "Items",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "number": {
+      "type": "integer",
+      "unique": false,
+      "required": true
+    },
+    "product": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::product.product"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "Open",
+        "Reserved",
+        "Ordered",
+        "Paid"
+      ],
+      "required": true,
+      "default": "Open"
+    }
+  }
+}
