@@ -26,6 +26,14 @@
       ],
       "required": true,
       "default": "Open"
+    },
+    "reserved_at": {
+      "type": "datetime"
+    },
+    "reserved_user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
     }
   }
 }
