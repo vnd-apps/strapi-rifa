@@ -20,13 +20,10 @@
       "relation": "oneToMany",
       "target": "api::product.product"
     },
-    "users_permissions_user": {
+    "user": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "plugin::users-permissions.user"
-    },
-    "date": {
-      "type": "datetime"
     },
     "status": {
       "type": "enumeration",
@@ -41,11 +38,6 @@
     },
     "qr_code_base64": {
       "type": "string"
-    },
-    "items": {
-      "type": "component",
-      "repeatable": true,
-      "component": "raffle.items"
     }
   }
 }
