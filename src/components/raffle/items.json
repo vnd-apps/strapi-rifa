@@ -16,17 +16,6 @@
       "relation": "oneToOne",
       "target": "api::product.product"
     },
-    "status": {
-      "type": "enumeration",
-      "enum": [
-        "Open",
-        "Reserved",
-        "Ordered",
-        "Paid"
-      ],
-      "required": true,
-      "default": "Open"
-    },
     "reserved_at": {
       "type": "datetime"
     },

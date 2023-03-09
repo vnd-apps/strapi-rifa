@@ -15,11 +15,6 @@
     "total": {
       "type": "decimal"
     },
-    "products": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::product.product"
-    },
     "user": {
       "type": "relation",
       "relation": "oneToOne",
@@ -28,16 +23,23 @@
     "status": {
       "type": "enumeration",
       "enum": [
-        "created",
+        "pending",
         "paid",
         "cancelled"
-      ]
+      ],
+      "default": "pending"
     },
     "qr_code": {
       "type": "text"
     },
     "qr_code_base64": {
+      "type": "text"
+    },
+    "name": {
       "type": "string"
+    },
+    "products": {
+      "type": "json"
     }
   }
 }

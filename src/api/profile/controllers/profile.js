@@ -6,7 +6,7 @@
 
 const { createCoreController } = require('@strapi/strapi').factories;
 
-module.exports = createCoreController('api::profile.profile', ({Strapi}) => ({
+module.exports = createCoreController('api::profile.profile', ({strapi}) => ({
     async createMe(ctx) {
         try {
             const user = ctx.state.user;
