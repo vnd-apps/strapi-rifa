@@ -63,7 +63,23 @@ module.exports = createCoreController('api::order.order', ({strapi}) => ({
     const response = await super.create(ctx);
 
     return response;
+  },
+
+  async find(ctx) {
+    const { user } = ctx.state;
+    const orders = await strapi.entityService.findMany(
+      'api::order.order', {
+      populate: '*', // populate all relations
+      filters: {
+        user: user.id,
+      }
+    })
+    const sanitizedEntries = await this.sanitizeOutput(orders, ctx);
+
+    return this.transformResponse(sanitizedEntries);
   }
+    
+
 }));
 
 async function getTotal(products) {
