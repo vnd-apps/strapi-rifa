@@ -27,12 +27,19 @@
         "paid",
         "pending",
         "cancelled"
-      ]
+      ],
+      "default": "pending"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
     },
     "orders": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::order.order"
+      "target": "api::order.order",
+      "mappedBy": "payment"
     }
   }
 }
