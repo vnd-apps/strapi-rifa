@@ -10,19 +10,6 @@
       "type": "integer",
       "unique": false,
       "required": true
-    },
-    "product": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::product.product"
-    },
-    "reserved_at": {
-      "type": "datetime"
-    },
-    "reserved_user": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "plugin::users-permissions.user"
     }
   }
 }

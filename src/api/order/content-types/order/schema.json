@@ -12,34 +12,20 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "total": {
-      "type": "decimal"
-    },
-    "user": {
+    "product": {
       "type": "relation",
       "relation": "oneToOne",
-      "target": "plugin::users-permissions.user"
+      "target": "api::product.product"
     },
-    "status": {
-      "type": "enumeration",
-      "enum": [
-        "pending",
-        "paid",
-        "cancelled"
-      ],
-      "default": "pending"
+    "numbers": {
+      "type": "component",
+      "repeatable": true,
+      "component": "raffle.items"
     },
-    "qr_code": {
-      "type": "text"
-    },
-    "qr_code_base64": {
-      "type": "text"
-    },
-    "name": {
-      "type": "string"
-    },
-    "products": {
-      "type": "json"
+    "payment": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::payment.payment"
     }
   }
 }

@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- * tag service
+ * payment service
  */
 
 const { createCoreService } = require('@strapi/strapi').factories;
 
-module.exports = createCoreService('api::tag.tag');
+module.exports = createCoreService('api::payment.payment');
