@@ -30,12 +30,14 @@ module.exports = createCoreController('api::product.product', ({ strapi }) => ({
     )
     const orders = await strapi.entityService.findMany(
       'api::order.order', {
-      populate: '*', // populate all relations
-      filters: {
-        $not: {
-          status: 'cancelled',
+        populate: 'product,numbers.item,payment', // populate all relations
+      filters: {         
+          payment: {
+            status: {
+              $not: 'cancelled'
+            },
+          },
         },
-      }
     })
 
     const productItems = await getProductsWithStatus(orders, product);
@@ -54,11 +56,8 @@ async function getProductsWithStatus(orders, product) {
     const productItems = product.items.map((item) => {
       const isItemReserved = orders.some(
         (order) =>
-          order.products.some(
-            (orderProduct) =>
-              orderProduct.productID === product.id &&
-              orderProduct.items.some((i) => i.number === item.number)
-          )
+          order.product.id === product.id &&
+          order.numbers.some((i) => i.number === item.number)
       );
       const status = isItemReserved ? "unavailable" : "available";
       return { ...item, status };
