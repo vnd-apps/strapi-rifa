@@ -26,6 +26,7 @@ module.exports = createCoreController('api::payment.payment', ({ strapi }) => ({
         data: {
           product: product.id,
           numbers: product.items,
+          publishedAt: new Date().getTime(),
         },
       });
       orderIDs.push(order.id);
@@ -56,6 +57,7 @@ module.exports = createCoreController('api::payment.payment', ({ strapi }) => ({
           qr_code_base64: response.point_of_interaction.transaction_data.qr_code_base64,
           total: total,
           user: user.id,
+          publishedAt: new Date().getTime(),
         },
       });
 
