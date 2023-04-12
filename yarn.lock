@@ -1965,15 +1965,15 @@
     react-intl "6.3.2"
     yup "^0.32.9"
 
-"@strapi/plugin-i18n@4.9.0":
-  version "4.9.0"
-  resolved "https://registry.yarnpkg.com/@strapi/plugin-i18n/-/plugin-i18n-4.9.0.tgz#f076e21d79de86d60cae01500861380d75bb05e3"
-  integrity sha512-W/xbnOezK3DvtKqhznKmH6j1OwsNevtvHPh7cNPt0Vp+Tp8l8gSEUzWsWJ/JifzLXRW0OdiQmYnmHlDQaXKL7A==
+"@strapi/plugin-i18n@4.9.1":
+  version "4.9.1"
+  resolved "https://registry.yarnpkg.com/@strapi/plugin-i18n/-/plugin-i18n-4.9.1.tgz#0453446181f4997a59198a1c2dfcab3342aa59ea"
+  integrity sha512-UvvnONCkul8AzD69BbB0kOW933nvKPV1O8LS34uy9AwUXzxkYZWDD0WA+CloiPAiAfN7TNOQLJhchw5qwj1+NQ==
   dependencies:
     "@strapi/design-system" "1.6.6"
-    "@strapi/helper-plugin" "4.9.0"
+    "@strapi/helper-plugin" "4.9.1"
     "@strapi/icons" "1.6.6"
-    "@strapi/utils" "4.9.0"
+    "@strapi/utils" "4.9.1"
     formik "2.2.9"
     immer "9.0.19"
     lodash "4.17.21"
@@ -7770,14 +7770,14 @@ purest@4.0.2:
     request-multipart "^1.0.0"
     request-oauth "^1.0.1"
 
-qs@6.11.0, qs@^6.10.2, qs@^6.10.3, qs@^6.4.0, qs@^6.9.6:
+qs@6.11.0:
   version "6.11.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.11.0.tgz#fd0d963446f7a65e1367e01abd85429453f0c37a"
   integrity sha512-MvjoMCJwEarSbUYk5O+nmoSzSutSsTwF85zcHPQ9OrlFoZOYIjaqBAJIqIXjptyD5vThxGq52Xu/MaJzRkIk4Q==
   dependencies:
     side-channel "^1.0.4"
 
-qs@6.11.1:
+qs@6.11.1, qs@^6.10.2, qs@^6.10.3, qs@^6.4.0, qs@^6.9.6:
   version "6.11.1"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.11.1.tgz#6c29dff97f0c0060765911ba65cbc9764186109f"
   integrity sha512-0wsrzgTz/kAVIeuxSjnpGC56rzYtr6JT/2BwEvMaPhFIoYa1aGO8LbzuU1R0uUYQkLpWBTOj0l/CLAJB64J6nQ==
