@@ -15,7 +15,21 @@ module.exports = createCoreController('api::payment.payment', ({ strapi }) => ({
   async create(ctx) {
     const { user } = ctx.state;
     const { products } = ctx.request.body;
+    const orderIDs = [];
 
+    if (await checkExistsProductsNumbers(products)) {
+      return ctx.badRequest('Product number already exists');
+    }
+
+    for (const product of products) {
+      const order = await strapi.entityService.create('api::order.order', {
+        data: {
+          product: product.id,
+          numbers: product.items,
+        },
+      });
+      orderIDs.push(order.id);
+    }
 
     const total = await getTotal(products);
 
@@ -44,12 +58,11 @@ module.exports = createCoreController('api::payment.payment', ({ strapi }) => ({
           user: user.id,
         },
       });
-      for (const product of products) {
-        await strapi.entityService.create('api::order.order', {
+
+      for(const orderID of orderIDs) {
+        await strapi.entityService.update('api::order.order', orderID, {
           data: {
-            product: product.id,
-            numbers: product.items,
-            payment: entity.id
+            payment: entity.id,
           },
         });
       }
@@ -63,11 +76,43 @@ module.exports = createCoreController('api::payment.payment', ({ strapi }) => ({
   }
 }));
 
-async function getTotal(products) {
+const getTotal = async (products) => {
   let totalPrice = 0;
   for (const product of products) {
     const entry = await strapi.entityService.findOne('api::product.product', product.id);
     totalPrice += entry.price * product.items.length;
   }
   return totalPrice;
+}
+
+const checkExistsProductsNumbers = async (products) => {
+  for(const product of products) {
+    const orders = await strapi.entityService.findMany(
+      'api::order.order', {
+      populate: 'numbers.item,payment', // populate all relations
+      filters: {
+        product: {
+          id: {
+            $eq: product.id
+          }
+        },
+        numbers: {
+          number: {
+            $in: product.items.map((item) => item.number)
+          }
+        },
+        payment: {
+          status: {
+            $not: 'cancelled'
+          },
+        },
+      },
+    })
+
+    if (orders.length > 0){
+      return true;
+    }
+  }
+  
+  return false;
 }
