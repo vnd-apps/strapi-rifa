@@ -58,7 +58,8 @@
     },
     "quantity": {
       "type": "integer",
-      "required": true
+      "required": true,
+      "private": true
     },
     "items": {
       "type": "component",
@@ -69,6 +70,12 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::category.category"
+    },
+    "exterior": {
+      "type": "string"
+    },
+    "float": {
+      "type": "float"
     }
   }
 }

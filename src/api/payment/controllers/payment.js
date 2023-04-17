@@ -15,68 +15,31 @@ module.exports = createCoreController('api::payment.payment', ({ strapi }) => ({
   async create(ctx) {
     const { user } = ctx.state;
     const { products } = ctx.request.body;
-    const orderIDs = [];
 
     if (await checkExistsProductsNumbers(products)) {
       return ctx.badRequest('Product number already exists');
     }
 
-    for (const product of products) {
-      const order = await strapi.entityService.create('api::order.order', {
-        data: {
-          product: product.id,
-          numbers: product.items,
-          publishedAt: new Date().getTime(),
-        },
-      });
-      orderIDs.push(order.id);
-    }
+    const orderIDs = await createOrders(strapi, products);
 
     const total = await getTotal(products);
 
-    const payment_data = {
-      transaction_amount: total,
-      description: "description",
-      payment_method_id: 'pix',
-      payer: {
-        email: user.email,
-        first_name: "user.fullName",
-        last_name: "user.fullName",
-        identification: {
-          type: 'E-MAIL',
-          number: user.email
-        },
-      }
-    };
-
     try {
-      const {response} = await mercadoPago.payment.create(payment_data);
-      const entity = await strapi.entityService.create('api::payment.payment', {
-        data: {
-          qr_code: response.point_of_interaction.transaction_data.qr_code,
-          qr_code_base64: response.point_of_interaction.transaction_data.qr_code_base64,
-          total: total,
-          user: user.id,
-          publishedAt: new Date().getTime(),
-        },
-      });
+      const {response} = await createMercadoPagoPix(total, user)
+      const payment = await createPayment(strapi, user.id, response, total)
 
       for(const orderID of orderIDs) {
-        await strapi.entityService.update('api::order.order', orderID, {
-          data: {
-            payment: entity.id,
-          },
-        });
+        await updateOrderPayment(strapi, orderID, payment.id)
       }
-      return await strapi.entityService.findOne('api::payment.payment', entity.id, {
-        populate: '*',
-      });
+      return await getPayment(payment.id);
 
     } catch (error) {
       return error
     }    
   }
 }));
+
+// Methods
 
 const getTotal = async (products) => {
   let totalPrice = 0;
@@ -117,4 +80,62 @@ const checkExistsProductsNumbers = async (products) => {
   }
   
   return false;
+}
+
+const createOrders = async (strapi, products) => {
+  const orderIDs = [];
+  for (const product of products) {
+    const order = await strapi.entityService.create('api::order.order', {
+      data: {
+        product: product.id,
+        numbers: product.items,
+      },
+    });
+    orderIDs.push(order.id);
+  }
+  return orderIDs;
+};
+
+const createPayment = async (strapi, userID, response, total) => {
+  return strapi.entityService.create('api::payment.payment', {
+    data: {
+      qr_code: response.point_of_interaction.transaction_data.qr_code,
+      qr_code_base64: response.point_of_interaction.transaction_data.qr_code_base64,
+      total: total,
+      user: userID,
+      publishedAt: new Date().getTime(),
+    },
+  })
+};
+
+const updateOrderPayment = async (strapi, orderID, paymentID) => {
+  return strapi.entityService.update('api::order.order', orderID, {
+    data: {
+      payment: paymentID,
+      publishedAt: new Date().getTime(),
+    },
+  });
+}
+
+const getPayment = async (paymentID) => {
+  return strapi.entityService.findOne('api::payment.payment', paymentID, {
+    populate: '*',
+  });
+}
+
+const createMercadoPagoPix = async (total, user) => {
+  return await mercadoPago.payment.create({
+    transaction_amount: total,
+    description: "description",
+    payment_method_id: 'pix',
+    payer: {
+      email: user.email,
+      first_name: "user.fullName",
+      last_name: "user.fullName",
+      identification: {
+        type: 'E-MAIL',
+        number: user.email
+      },
+    }
+  });
 }
