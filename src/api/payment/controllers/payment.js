@@ -16,6 +16,10 @@ module.exports = createCoreController('api::payment.payment', ({ strapi }) => ({
     const { user } = ctx.state;
     const { products } = ctx.request.body;
 
+    if (await productUserLimitReached(user.id, products)) {
+      return ctx.badRequest('Product limit reached');
+    }
+
     if (await checkExistsProductsNumbers(products)) {
       return ctx.badRequest('Product number already exists');
     }
@@ -25,17 +29,17 @@ module.exports = createCoreController('api::payment.payment', ({ strapi }) => ({
     const total = await getTotal(products);
 
     try {
-      const {response} = await createMercadoPagoPix(total, user)
+      const { response } = await createMercadoPagoPix(total, user)
       const payment = await createPayment(strapi, user.id, response, total)
 
-      for(const orderID of orderIDs) {
+      for (const orderID of orderIDs) {
         await updateOrderPayment(strapi, orderID, payment.id)
       }
       return await getPayment(payment.id);
 
     } catch (error) {
       return error
-    }    
+    }
   }
 }));
 
@@ -50,8 +54,37 @@ const getTotal = async (products) => {
   return totalPrice;
 }
 
+const productUserLimitReached = async (userID, products) => {
+  for (const product of products) {
+    const payment = await strapi.entityService.findMany(
+      'api::payment.payment', {
+      populate: 'user,orders.product', // populate all relations
+      filters: {
+        user: {
+          id: {
+            $eq: userID
+          }
+        },
+        orders: {
+          product: {
+            id: product.id,
+            userLimit: true
+            },
+        },
+      },
+    })
+
+    if (payment.length > 0) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+
 const checkExistsProductsNumbers = async (products) => {
-  for(const product of products) {
+  for (const product of products) {
     const orders = await strapi.entityService.findMany(
       'api::order.order', {
       populate: 'numbers.item,payment', // populate all relations
@@ -74,11 +107,11 @@ const checkExistsProductsNumbers = async (products) => {
       },
     })
 
-    if (orders.length > 0){
+    if (orders.length > 0) {
       return true;
     }
   }
-  
+
   return false;
 }
 

@@ -53,8 +53,8 @@
     },
     "userLimit": {
       "type": "boolean",
-      "private": true,
-      "required": true
+      "required": true,
+      "default": false
     },
     "quantity": {
       "type": "integer",
@@ -71,11 +71,18 @@
       "relation": "oneToOne",
       "target": "api::category.category"
     },
-    "exterior": {
-      "type": "string"
-    },
     "float": {
       "type": "float"
+    },
+    "exterior": {
+      "type": "enumeration",
+      "enum": [
+        "Factory New",
+        "Minimal Wear",
+        "Field-Tested",
+        "Well-Worn",
+        "Battle-Scarred"
+      ]
     }
   }
 }
