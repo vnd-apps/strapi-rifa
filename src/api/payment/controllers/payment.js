@@ -157,14 +157,17 @@ const getPayment = async (paymentID) => {
 }
 
 const createMercadoPagoPix = async (total, user) => {
+  const { firstName, lastName } = splitFullName(fullName);
+  const description = `Pix user: ${user.email}. Total: ${total}`
+
   return await mercadoPago.payment.create({
     transaction_amount: total,
-    description: "description",
+    description: description,
     payment_method_id: 'pix',
     payer: {
       email: user.email,
-      first_name: "user.fullName",
-      last_name: "user.fullName",
+      first_name: firstName,
+      last_name: lastName,
       identification: {
         type: 'E-MAIL',
         number: user.email
@@ -172,3 +175,11 @@ const createMercadoPagoPix = async (total, user) => {
     }
   });
 }
+
+const splitFullName = fullName => {
+  const [firstName, ...lastName] = fullName.split(" ");
+  return {
+    firstName,
+    lastName: lastName.join(" ")
+  };
+};
